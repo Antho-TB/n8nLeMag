@@ -1,0 +1,207 @@
+{
+  "updatedAt": "2026-04-20T09:49:37.199Z",
+  "createdAt": "2026-04-20T09:32:35.827Z",
+  "id": "4sKJmePfIntzL6kL",
+  "name": "Surveillance_Erreurs_Mail",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "183c5132-75d1-4ece-bc87-73d72b2cd283",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        832,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "sendTo": "a.bezille@tb-groupe.fr",
+        "subject": "=🚨 Erreur Critique sur n8n : {{ $json.workflow.name }}",
+        "message": "=<p><b>Workflow</b> : {{ $json.workflow.name }} vient d'échouer.</p>\n<p><b>Erreur</b> : {{ $json.execution.error.message }}</p>\n<p>🔗 <a href=\"{{ $json.execution.url }}\">Cliquez ici pour inspecter l'erreur dans n8n</a></p>",
+        "options": {}
+      },
+      "id": "31ad6bde-eefd-4e92-ace5-c38a16db8a2b",
+      "name": "Envoi Alerte Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        368
+      ],
+      "webhookId": "c5946ce0-7b00-4fa4-a8dc-51e7c59a213f",
+      "credentials": {
+        "googleApi": {
+          "id": "S5OSP8yAJSkNv6Oe",
+          "name": "Google Service Account account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Envoi Alerte Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c8f4a829-0f5d-45dc-b8fa-4c6f7bb77927",
+  "activeVersionId": "c8f4a829-0f5d-45dc-b8fa-4c6f7bb77927",
+  "versionCounter": 6,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-20T09:32:35.829Z",
+      "createdAt": "2026-04-20T09:32:35.829Z",
+      "role": "workflow:owner",
+      "workflowId": "4sKJmePfIntzL6kL",
+      "projectId": "N3v16HX0YRmlf9Qf",
+      "project": {
+        "updatedAt": "2025-07-30T07:34:31.541Z",
+        "createdAt": "2025-07-30T07:11:54.917Z",
+        "id": "N3v16HX0YRmlf9Qf",
+        "name": "Anthony BEZILLE <a.bezille@tb-groupe.fr>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf",
+        "projectRelations": [
+          {
+            "updatedAt": "2025-07-30T07:11:54.917Z",
+            "createdAt": "2025-07-30T07:11:54.917Z",
+            "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf",
+            "projectId": "N3v16HX0YRmlf9Qf",
+            "user": {
+              "updatedAt": "2026-04-20T06:57:21.110Z",
+              "createdAt": "2025-07-30T07:11:54.263Z",
+              "id": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf",
+              "email": "a.bezille@tb-groupe.fr",
+              "firstName": "Anthony",
+              "lastName": "BEZILLE",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2025-07-30T07:35:09.737Z",
+                "personalization_survey_n8n_version": "1.104.1",
+                "automationGoalDevops": [
+                  "reporting"
+                ],
+                "companyIndustryExtended": [
+                  "physical-retail-or-services"
+                ],
+                "companySize": "20-99",
+                "companyType": "other",
+                "role": "devops",
+                "reportedSource": "linkedin"
+              },
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "pqpAPzl7YxA6TF7k",
+                "userActivatedAt": 1753883399919,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1776668238036
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2026-04-19",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-04-20T09:49:37.199Z",
+    "createdAt": "2026-04-20T09:49:37.199Z",
+    "versionId": "c8f4a829-0f5d-45dc-b8fa-4c6f7bb77927",
+    "workflowId": "4sKJmePfIntzL6kL",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "183c5132-75d1-4ece-bc87-73d72b2cd283",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          832,
+          368
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "serviceAccount",
+          "sendTo": "a.bezille@tb-groupe.fr",
+          "subject": "=🚨 Erreur Critique sur n8n : {{ $json.workflow.name }}",
+          "message": "=<p><b>Workflow</b> : {{ $json.workflow.name }} vient d'échouer.</p>\n<p><b>Erreur</b> : {{ $json.execution.error.message }}</p>\n<p>🔗 <a href=\"{{ $json.execution.url }}\">Cliquez ici pour inspecter l'erreur dans n8n</a></p>",
+          "options": {}
+        },
+        "id": "31ad6bde-eefd-4e92-ace5-c38a16db8a2b",
+        "name": "Envoi Alerte Gmail",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          1040,
+          368
+        ],
+        "webhookId": "c5946ce0-7b00-4fa4-a8dc-51e7c59a213f",
+        "credentials": {
+          "googleApi": {
+            "id": "S5OSP8yAJSkNv6Oe",
+            "name": "Google Service Account account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Envoi Alerte Gmail",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Anthony BEZILLE",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-04-20T09:50:19.742Z",
+        "id": 20,
+        "workflowId": "4sKJmePfIntzL6kL",
+        "versionId": "c8f4a829-0f5d-45dc-b8fa-4c6f7bb77927",
+        "event": "activated",
+        "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf"
+      }
+    ]
+  }
+}

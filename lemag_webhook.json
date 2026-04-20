@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-20T09:54:37.367Z",
+  "updatedAt": "2026-04-20T10:08:53.333Z",
   "createdAt": "2026-04-20T09:05:36.613Z",
   "id": "AhmARzFtlkzJMOoG",
   "name": "LeMag_Webhook",
@@ -848,15 +848,15 @@
     "availableInMCP": true,
     "timeSavedMode": "fixed",
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 300,
+    "executionTimeout": 600,
     "errorWorkflow": "4sKJmePfIntzL6kL"
   },
   "staticData": null,
   "meta": null,
   "pinData": {},
   "versionId": "d0721dbd-576f-47a6-a715-a9a5700326dc",
-  "activeVersionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
-  "versionCounter": 21,
+  "activeVersionId": "d0721dbd-576f-47a6-a715-a9a5700326dc",
+  "versionCounter": 28,
   "triggerCount": 1,
   "shared": [
     {
@@ -924,9 +924,9 @@
   ],
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-04-20T09:21:42.021Z",
-    "createdAt": "2026-04-20T09:21:42.021Z",
-    "versionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
+    "updatedAt": "2026-04-20T10:08:02.000Z",
+    "createdAt": "2026-04-20T09:53:57.163Z",
+    "versionId": "d0721dbd-576f-47a6-a715-a9a5700326dc",
     "workflowId": "AhmARzFtlkzJMOoG",
     "nodes": [
       {
@@ -1165,20 +1165,6 @@
         ],
         "id": "d3b187d3-dec6-4729-9191-fa6f64b9d094",
         "name": "Réunir les Chemins"
-      },
-      {
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const item = $input.item.json;\nconst authorName = item.name.trim();\nconst serviceName = item.service.trim();\n\n// --- 1. Tables de correspondance ---\nconst authorMap = {\n  \"ADV\": 4, \"Anthony\": 2, \"Bureau Etude\": 5, \"Commerce\": 6,\n  \"Compta\": 7, \"Design\": 8, \"Direction\": 9, \"Emeline\": 1,\n  \"Expeditions\": 10, \"Informatique\": 11, \"Logistique\": 12,\n  \"n8n\": 17, \"Production\": 13, \"Qualite/Méthode\": 14, \"SamySel\": 16, \"Web\": 15, \"RH\":19,\n};\nconst defaultAuthorId = 1;\n\nconst categoryMap = {\n  \"IA\": 4, \"Métier\": 6, \"Produit\": 5,\n  \"Tech\": 3, \"Vie d'entreprise\": 1,\n};\nconst defaultCategoryId = 1;\n\n// --- 2. CORRECTION DE L'URL POUR DOCKER ---\n// On vérifie si un fichier existe avant de tenter de remplacer l'URL\nif (item.fichier) {\n  // On remplace l'ancienne adresse par la nouvelle\n  item.fichier = item.fichier.replace('host.docker.internal', '172.17.0.1');\n}\n\n// --- 3. Recherche des ID ---\nitem.authorId = authorMap[authorName] || defaultAuthorId;\nitem.categoryId = categoryMap[serviceName] || defaultCategoryId;\n\n// --- 4. Création d'un nom de fichier unique ---\nif (item.fichier) {\n  const originalFilename = item.fichier.split('/').pop();\n  const parts = originalFilename.split('.');\n  const extension = parts.pop();\n  const nameWithoutExt = parts.join('.');\n  const randomString = Math.random().toString(36).substring(2, 8);\n  item.uniqueFilename = `${nameWithoutExt}-${randomString}.${extension}`;\n}\n\n// On retourne l'objet enrichi\nreturn item;"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          -272,
-          1072
-        ],
-        "id": "b4583039-63ca-4bf9-9f0f-6b699a57a553",
-        "name": "Traduction des ID"
       },
       {
         "parameters": {
@@ -1474,7 +1460,8 @@
         "position": [
           -3008,
           1200
-        ]
+        ],
+        "webhookId": "e549ae5a-7480-4a0d-a76c-9943dcd02f4a"
       },
       {
         "parameters": {
@@ -1485,9 +1472,23 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -2500,
+          -2496,
           1200
         ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item.json;\nconst authorName = item.name.trim();\nconst serviceName = item.service.trim();\n\n// --- 1. Tables de correspondance ---\nconst authorMap = {\n  \"ADV\": 4, \"Anthony\": 2, \"Bureau Etude\": 5, \"Commerce\": 6,\n  \"Compta\": 7, \"Design\": 8, \"Direction\": 9, \"Emeline\": 1,\n  \"Expeditions\": 10, \"Informatique\": 11, \"Logistique\": 12,\n  \"n8n\": 17, \"Production\": 13, \"Qualite/Méthode\": 14, \"SamySel\": 16, \"Web\": 15, \"RH\":19,\n};\nconst defaultAuthorId = 1;\n\nconst categoryMap = {\n  \"IA\": 4, \"Métier\": 6, \"Produit\": 5,\n  \"Tech\": 3, \"Vie d'entreprise\": 1,\n};\nconst defaultCategoryId = 1;\n\n// --- 2. CORRECTION DE L'URL POUR DOCKER ---\n// On vérifie si un fichier existe avant de tenter de remplacer l'URL\nif (item.fichier) {\n  // On remplace l'ancienne adresse par la nouvelle\n  item.fichier = item.fichier.replace('host.docker.internal', '172.17.0.1');\n}\n\n// --- 3. Recherche des ID ---\nitem.authorId = authorMap[authorName] || defaultAuthorId;\nitem.categoryId = categoryMap[serviceName] || defaultCategoryId;\n\n// --- 4. Création d'un nom de fichier unique ---\nif (item.fichier) {\n  const originalFilename = item.fichier.split('/').pop();\n  const parts = originalFilename.split('.');\n  const extension = parts.pop();\n  const nameWithoutExt = parts.join('.');\n  const randomString = Math.random().toString(36).substring(2, 8);\n  item.uniqueFilename = `${nameWithoutExt}-${randomString}.${extension}`;\n}\n\n// On retourne l'objet enrichi\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -272,
+          1072
+        ],
+        "id": "b4583039-63ca-4bf9-9f0f-6b699a57a553",
+        "name": "Traduction des ID"
       }
     ],
     "connections": {
@@ -1608,17 +1609,6 @@
           [
             {
               "node": "Traduction des ID",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Traduction des ID": {
-        "main": [
-          [
-            {
-              "node": "Si i'auteur à ajouté un image alors",
               "type": "main",
               "index": 0
             }
@@ -1762,42 +1752,37 @@
             }
           ]
         ]
+      },
+      "Traduction des ID": {
+        "main": [
+          [
+            {
+              "node": "Si i'auteur à ajouté un image alors",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Anthony BEZILLE",
-    "name": null,
-    "description": null,
+    "name": "Version d0721dbd",
+    "description": "",
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-04-20T09:21:42.089Z",
-        "id": 18,
+        "createdAt": "2026-04-20T10:08:02.386Z",
+        "id": 25,
         "workflowId": "AhmARzFtlkzJMOoG",
-        "versionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
+        "versionId": "d0721dbd-576f-47a6-a715-a9a5700326dc",
         "event": "activated",
         "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf"
       },
       {
-        "createdAt": "2026-04-20T09:50:19.759Z",
-        "id": 21,
+        "createdAt": "2026-04-20T10:08:53.397Z",
+        "id": 26,
         "workflowId": "AhmARzFtlkzJMOoG",
-        "versionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
-        "event": "activated",
-        "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf"
-      },
-      {
-        "createdAt": "2026-04-20T09:54:00.421Z",
-        "id": 22,
-        "workflowId": "AhmARzFtlkzJMOoG",
-        "versionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
-        "event": "activated",
-        "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf"
-      },
-      {
-        "createdAt": "2026-04-20T09:54:37.407Z",
-        "id": 23,
-        "workflowId": "AhmARzFtlkzJMOoG",
-        "versionId": "b11640c0-51d1-4af8-b867-ee19d1280261",
+        "versionId": "d0721dbd-576f-47a6-a715-a9a5700326dc",
         "event": "activated",
         "userId": "028d4a7f-ea8f-4e9c-8b05-4fc812024bbf"
       }
