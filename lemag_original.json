@@ -1,0 +1,877 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Déclencheurs",
+        "height": 1056,
+        "width": 624,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3216,
+        656
+      ],
+      "typeVersion": 1,
+      "id": "eaef5414-fce3-4f3a-bb5b-8f1f924f914a",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3008,
+        1120
+      ],
+      "id": "cddae373-550f-4fc3-87aa-3238404e01c5",
+      "name": "Execute quand on clique"
+    },
+    {
+      "parameters": {
+        "content": "Image",
+        "height": 1840,
+        "width": 1632
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "6584ca27-8b68-4487-814f-3e61a6a139d1",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "LLM",
+        "height": 1456,
+        "width": 2112,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2416,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "f7d4d74a-1e57-49c1-b590-ad7f4d883aba",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "WP ne sait pas lire les Services au format texte\n",
+        "height": 800,
+        "width": 448,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        720
+      ],
+      "typeVersion": 1,
+      "id": "91be8034-3b92-484d-9d2b-c8a213cf0a50",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "SQL sur BDD WP",
+        "height": 864,
+        "width": 464,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2688,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "9d7a6c50-1c61-4392-83b6-5afaa08b697f",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    v.submission_id,\n    MAX(CASE WHEN v.key = 'name' THEN v.value END) AS name,\n    MAX(CASE WHEN v.key = 'service' THEN v.value END) AS service,\n    MAX(CASE WHEN v.key = 'message' THEN v.value END) AS message,\n    MAX(CASE WHEN v.key = 'field_cd2aae5' THEN v.value END) AS Titre,\n    MAX(CASE WHEN v.key = 'field_a70b45a' THEN v.value END) AS fichier,\n    MAX(CASE WHEN v.key = 'categorie' THEN v.value END) AS Categorie,\n    MAX(CASE WHEN v.key = 'field_c3233c5' THEN v.value END) AS skip_ai,\n    s.user_ip, -- AJOUT DE L'IP ICI\n    s.created_at\nFROM \n    wp_e_submissions_values AS v\nJOIN \n    wp_e_submissions AS s ON v.submission_id = s.id\nWHERE \n    s.created_at >= NOW() - INTERVAL 30 MINUTE\n    AND s.post_id IS NULL -- FILTRE ANTI-DOUBLON (uniquement si pas encore lié)\nGROUP BY \n    v.submission_id, s.created_at, s.user_ip\nORDER BY \n    s.created_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -2512,
+        1216
+      ],
+      "id": "a10b031c-958e-46c3-bf3d-6aa6faa265b6",
+      "name": "Requète SQL sur BDD Wordpress",
+      "credentials": {
+        "mySql": {
+          "id": "RAQGvzluhwFnWnSq",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2f640a66-53f9-4441-a6d4-d943c771cd56",
+              "leftValue": "={{ $json.skip_ai }}",
+              "rightValue": true,
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2144,
+        1200
+      ],
+      "id": "2c5e7779-988a-4c9d-8ed5-6c4ad1c99fae",
+      "name": "Ne pas modifier si"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1840,
+        896
+      ],
+      "id": "cc14003a-b33a-4ad5-a30c-e2a4218edf6b",
+      "name": "Boucle pour chaque article, sans l'ia"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1840,
+        1376
+      ],
+      "id": "39323f5e-3579-49a5-b541-a0b9edf4f36f",
+      "name": "Boucle pour chaque article"
+    },
+    {
+      "parameters": {
+        "jsCode": "// On lit l'article qui arrive du nœud Loop\nconst item = $input.item.json;\n\n// On construit un prompt détaillé pour Gemini\nconst promptText = `**Rôle et Contexte :** Tu es un journaliste interne pour la newsletter \"Le Mag'\" de l'entreprise TB Groupe. Ton style est engageant, positif et professionnel mais décontracté. Je ne veux pas que tu sois dans l'exagération ou dans l'extrapolation.\n\n**Mission :** Prends les informations brutes suivantes et transforme-les en un court article pour la newsletter.\n- **Pour le Titre :** Tu dois **impérativement réécrire et améliorer le titre** pour le rendre plus accrocheur, professionnel et engageant, même si le titre de base semble correct.\n- **Pour le Contenu :** Tu peux réécrire, enrichir et améliorer le texte pour le rendre plus percutant. **Si le contenu (les idées du collaborateur) est déjà parfaitement écrit, tu peux le copier-coller. Ne modifie jamais un lien URL, garde le intacte**\n\n**Données brutes à ne pas transformer :**\n- Nom : \"${item.name || 'Non fourni'}\"\n- Service : \"${item.service || 'Non fourni'}\"\n- Lien et raccourcis \n\n\n**Données brutes à transformer :**\n- Titre de base (à réécrire) : \\\"${item.Titre || 'Non fourni'}\\\"\n- Idées du collaborateur : \\\"${item.message || 'Non fourni'}\\\"\n\n**Instructions de style :**\n- Ton engageant et positif\n- Ajoute jusqu'à 2 émojis pertinents, n'utilises jamais celui ci : 🚀\n- Inspire toi du style et du vocabulaire de nos sites internet : https://tb1648.com/ , https://tb-outdoor.com/\n- Article de 150-300 mots maximum\n- Mettre en valeur l'initiative du service\n- Rendre le contenu accessible à tous les employés\n- Rajoute des majuscules seulement au noms propres et début de phrases\n\n**IMPORTANT :** Tu DOIS répondre UNIQUEMENT avec un objet JSON valide dans ce format exact :\n\n{\n  \"title\": \"Le nouveau titre accrocheur et amélioré\",\n  \"content\": \"Le contenu complet de l'article réécrit ou copié\"\n}\n\nPas de texte avant ou après le JSON. Uniquement le JSON.`;\n\n// On retourne UNIQUEMENT le prompt\nreturn {\n  prompt: promptText,\n  originalData: item \n};"
+      },
+      "id": "a00891cf-21af-4fc6-ae3a-cf87b01ae1a9",
+      "name": "Prompt pour LLM",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        1424
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\n\n// Utilise le titre et le message originaux\nconst finalTitle = item.Titre || 'Titre non fourni';\nconst finalContent = item.message || '';\n\n// Retourne un objet formaté pour la suite\nreturn {\n  ...item,\n  title: finalTitle,\n  content: `<p>${finalContent.replace(/\\n/g, '</p><p>')}</p>`,\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1456,
+        880
+      ],
+      "id": "d626c11b-00ac-46bc-8fa4-b99efd4a3cdc",
+      "name": "Préparer sans IA"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-pro-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-pro-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        1424
+      ],
+      "id": "2352fb2f-e3e6-4ce7-a1a5-eac35c91bcee",
+      "name": "Gemini - Gen Texte",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QzY6bC7kbC8QMFeM",
+          "name": "Google Ai Studio NanoB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1040,
+        1168
+      ],
+      "id": "7be255be-98ac-4cb2-9169-a15cdb95bd2b",
+      "name": "Combien article + texte modif"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Le nœud Merge a combiné les données. Tout est dans $input.item.json.\nconst mergedData = $input.item.json;\n\n// Les données originales viennent de l'Input 1 du Merge\nconst initialData = mergedData.originalData;\n\n// La réponse de l'IA vient de l'Input 2 du Merge\nconst geminiResponse = mergedData.content;\n\n// --- Vérifications ---\nif (!geminiResponse?.parts?.[0]?.text) {\n  throw new Error(\"La réponse de l'IA est invalide ou vide.\");\n}\nif (!initialData) {\n  throw new Error(\"Données originales non trouvées. Vérifiez la connexion vers l'Input 1 du nœud Merge.\");\n}\n\n// --- Parsing et création de l'objet ---\ntry {\n  let jsonString = geminiResponse.parts[0].text;\n  jsonString = jsonString.trim().replace(/^```json/g, '').replace(/```$/g, '');\n  \n  const articleObject = JSON.parse(jsonString);\n\n  // --- OBJET DE RETOUR MODIFIÉ ---\n  return {\n    ...initialData, //.\n    title: articleObject.title || initialData.Titre || 'Titre non trouvé', // Utilise le titre de l'IA, ou le titre original en secours\n    content: `<p>${(articleObject.content || '').replace(/\\n/g, '</p><p>')}</p>`,\n  };\n\n} catch (error) {\n  throw new Error(`Erreur de parsing JSON. Contenu reçu : \"${jsonString}\"`);\n}"
+      },
+      "id": "4a7dd31f-07aa-4b27-8cdb-3d566dc54e77",
+      "name": "Remplace le texte d'origine par celui modif",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        1168
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -608,
+        896
+      ],
+      "id": "d3b187d3-dec6-4729-9191-fa6f64b9d094",
+      "name": "Réunir les Chemins"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\nconst authorName = item.name.trim();\nconst serviceName = item.service.trim();\n\n// --- 1. Tables de correspondance ---\nconst authorMap = {\n  \"ADV\": 4, \"Anthony\": 2, \"Bureau Etude\": 5, \"Commerce\": 6,\n  \"Compta\": 7, \"Design\": 8, \"Direction\": 9, \"Emeline\": 1,\n  \"Expeditions\": 10, \"Informatique\": 11, \"Logistique\": 12,\n  \"n8n\": 17, \"Production\": 13, \"Qualite/Méthode\": 14, \"SamySel\": 16, \"Web\": 15, \"RH\":19,\n};\nconst defaultAuthorId = 1;\n\nconst categoryMap = {\n  \"IA\": 4, \"Métier\": 6, \"Produit\": 5,\n  \"Tech\": 3, \"Vie d'entreprise\": 1,\n};\nconst defaultCategoryId = 1;\n\n// --- 2. CORRECTION DE L'URL POUR DOCKER ---\n// On vérifie si un fichier existe avant de tenter de remplacer l'URL\nif (item.fichier) {\n  // On remplace l'ancienne adresse par la nouvelle\n  item.fichier = item.fichier.replace('host.docker.internal', '172.17.0.1');\n}\n\n// --- 3. Recherche des ID ---\nitem.authorId = authorMap[authorName] || defaultAuthorId;\nitem.categoryId = categoryMap[serviceName] || defaultCategoryId;\n\n// --- 4. Création d'un nom de fichier unique ---\nif (item.fichier) {\n  const originalFilename = item.fichier.split('/').pop();\n  const parts = originalFilename.split('.');\n  const extension = parts.pop();\n  const nameWithoutExt = parts.join('.');\n  const randomString = Math.random().toString(36).substring(2, 8);\n  item.uniqueFilename = `${nameWithoutExt}-${randomString}.${extension}`;\n}\n\n// On retourne l'objet enrichi\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        1072
+      ],
+      "id": "b4583039-63ca-4bf9-9f0f-6b699a57a553",
+      "name": "Traduction des ID"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "29c9959c-6622-45b1-8749-8f3caa186452",
+              "leftValue": "={{ $json.fichier }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        1056
+      ],
+      "id": "49439a88-26b1-4f55-a81f-ae3da74486ea",
+      "name": "Si i'auteur à ajouté un image alors"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\n\n// --- 1. Logique de Titre Robuste ---\nlet finalTitle = \"Titre non fourni\";\n\n// On priorise le titre généré par Gemini Ultra\nif (item.title && typeof item.title === 'string' && item.title.length > 0) {\n  finalTitle = item.title;\n} \n// En secours, on prend le titre original saisi dans Elementor\nelse if (item.Titre && typeof item.Titre === 'string' && item.Titre.length > 0) {\n  finalTitle = item.Titre;\n}\n\n// --- 2. Logique d'Image (Featured Media) ---\nlet image_id = undefined;\n\n// On vérifie les différentes sources d'ID média possibles\nif (item.id) {\n  image_id = item.id;\n} else if (item.image_id) {\n  image_id = item.image_id;\n} else if (item.featured_media) {\n  image_id = item.featured_media;\n} else if (Array.isArray(item.body) && item.body.length > 0 && item.body[0].id) {\n  image_id = item.body[0].id;\n}\n\n// --- 3. Construction du Contenu avec IP ---\nlet articleContent = item.content || item.message || \"\";\nconst authorIP = item.user_ip || \"Inconnue\";\n\n// On ajoute un séparateur et la mention de l'IP en bas de l'article\narticleContent += `\\n\\n<br><br><hr><p style=\"font-size: 11px; color: #777; font-style: italic;\">\nSource de la soumission : Intranet TB Groupe<br>\nAdresse IP de l'auteur : ${authorIP}\n</p>`;\n\n// --- 4. Construction du Payload pour WordPress ---\nconst postBody = {\n  title: finalTitle,\n  content: articleContent,\n  author: item.authorId || 1,        // ID traduit par le nœud précédent\n  categories: [item.categoryId || 1], // WordPress attend souvent un tableau d'IDs\n  status: 'draft',                   // Toujours en brouillon pour validation\n  comment_status: 'open'             // Permet les commentaires via wpDiscuZ\n};\n\n// Si une image a été uploadée (IA ou Auteur), on l'attache\nif (image_id) {\n  postBody.featured_media = image_id;\n}\n\n// --- 5. Sortie du nœud ---\nreturn {\n  json: {\n    postBody,\n    originalSubmissionId: item.submission_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        1168
+      ],
+      "id": "11323f24-c7c4-4130-bd36-aa4619d10798",
+      "name": "Préparer l'Article"
+    },
+    {
+      "parameters": {
+        "content": "Envoi à WP",
+        "height": 848,
+        "width": 528,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1488,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "8027b2d1-0e65-405e-bc78-f76b9902efcc",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.102.34/wp-json/wp/v2/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Host",
+              "value": "lemag-tb-gdd.interne.tarrerias-bonjean.fr"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.postBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1744,
+        1168
+      ],
+      "id": "db7092c8-655c-479d-9054-e8e73b1adc81",
+      "name": "Envoyer à WordPress",
+      "credentials": {
+        "wordpressApi": {
+          "id": "oNStNA8JoXdE8P4F",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-image-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+        },
+        "prompt": "={{ $json.imageGenerationPrompt.prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        624
+      ],
+      "id": "d74015c0-4a91-4167-945b-90bbe177d21a",
+      "name": "Nano Banana",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QzY6bC7kbC8QMFeM",
+          "name": "Google Ai Studio NanoB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://lemag-tb-gdd.interne.tarrerias-bonjean.fr/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename=\"image.png\""
+            },
+            {
+              "name": "Content-Type",
+              "value": "={{ $binary.data.mimeType }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        816
+      ],
+      "id": "2edfdc6d-1e46-435f-b949-b23ae8abc799",
+      "name": "Uploader à WP",
+      "alwaysOutputData": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "oNStNA8JoXdE8P4F",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\n\n// --- Customize Prompt Details ---\n// Style général de l'illustration\nconst style_keywords = \"illustration conceptuelle, moderne, épurée, aux couleurs vives et professionnelles. Ne pas utiliser de symboles de couteaux ou d'objets tranchants. Utilise une palette de couleurs proche de celle de TB Groupe (noir, rouge, gris, blanc) mais peut incorporer d'autres couleurs pour le dynamisme.\";\n\n// Ce qu'il faut absolument éviter\nconst negative_prompt = \"texte, mots, lettres, chiffres, logos explicites, photoréaliste, agressif, caricatural. Éviter les stéréotypes trop marqués ou les scènes génériques.\";\n\n// --- Spécification du Clin d'œil TB/GDD ---\n// L'IA est encouragée à interpréter cela de manière subtile, par exemple via l'intégration de formes, de motifs, ou une esthétique qui rappelle nos produits sans les montrer directement.\n// Exemples : des lignes épurées et précises, des textures métalliques douces, une composition qui évoque la qualité ou l'innovation.\nconst company_nod = \"Intègre subtilement un clin d'œil à l'identité de TB Groupe et GDD, par des formes, une ambiance ou des motifs qui évoquent la précision, la qualité ou l'innovation industrielle, sans montrer de produits spécifiques comme des couteaux.\";\n// --------------------------------\n\n// Combine elements for the main prompt description\nconst main_prompt = `Génère une illustration pour une newsletter interne. L'image doit être directement pertinente et visuellement explicite par rapport au contenu de l'article.\nLe sujet principal de l'article est : \"${item.title}\".\nLes idées clés et le contexte du message sont : \"${item.message.substring(0, 300)}\".\nLe style doit être ${style_keywords}.\n${company_nod}\nN'ajoute absolument aucun texte sur l'image, ni le titre, ni le nom de l'entreprise, ni aucun autre mot.`;\n\n// Generate a unique filename\nconst randomString = Math.random().toString(36).substring(2, 8);\nitem.uniqueFilename = `generated-${item.submission_id}-${randomString}.png`;\n\n// Structure the output as JSON for an image generation API\nconst imageGenerationJson = {\n  \"prompt\": main_prompt,\n  \"n\": 1, // Number of images to generate\n  \"size\": \"1024x1024\", // Desired image size (check API docs)\n  \"response_format\": \"b64_json\", // Request Base64 encoded image data\n  \"style_preset\": \"digital-art\", // Vous pouvez aussi essayer \"flat-design\", \"vector-art\"\n  \"negative_prompt\": negative_prompt\n};\n\n// Return the item data along with the structured JSON prompt\nreturn {\n  ...item, // Keep original data\n  uniqueFilename: item.uniqueFilename, // Ensure unique filename is passed\n  imageGenerationPrompt: imageGenerationJson // The JSON object for the next node\n};"
+      },
+      "id": "9d322025-c909-4f43-bf10-d9ec58dba5c1",
+      "name": "Prompt Génération Image",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.fichier }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        1392
+      ],
+      "id": "063412fd-58c0-4969-8f1b-5cfe94d1e3cf",
+      "name": "Télécharger Image Auteur",
+      "credentials": {
+        "wordpressApi": {
+          "id": "oNStNA8JoXdE8P4F",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.102.34/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename=\"image.png\""
+            },
+            {
+              "name": "Content-Type",
+              "value": "={{ $binary.data.mimeType }}"
+            },
+            {
+              "name": "Host",
+              "value": "lemag-tb-gdd.interne.tarrerias-bonjean.fr"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        688,
+        1408
+      ],
+      "id": "503d03dc-2c11-4b31-b7b2-ab547570da1d",
+      "name": "Uploader à WP1",
+      "credentials": {
+        "wordpressApi": {
+          "id": "oNStNA8JoXdE8P4F",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1248,
+        1296
+      ],
+      "id": "bdef6f9d-fb34-4fde-b90f-d44b96efd525",
+      "name": "Combiner le texte avec l'image Auteur"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1232,
+        1008
+      ],
+      "id": "c4fa606d-0fac-46c1-bb2a-898ad650fd3a",
+      "name": "Combiner le texte avec l'image ia"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3008,
+        1408
+      ],
+      "id": "3467c5e3-56cb-4d0b-b703-f1ba0ee08fcd",
+      "name": "Toutes les 30 minutes"
+    }
+  ],
+  "connections": {
+    "Execute quand on clique": {
+      "main": [
+        [
+          {
+            "node": "Requète SQL sur BDD Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requète SQL sur BDD Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Ne pas modifier si",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ne pas modifier si": {
+      "main": [
+        [
+          {
+            "node": "Boucle pour chaque article, sans l'ia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Boucle pour chaque article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Boucle pour chaque article, sans l'ia": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Préparer sans IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Boucle pour chaque article": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prompt pour LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt pour LLM": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Gen Texte",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combien article + texte modif",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer sans IA": {
+      "main": [
+        [
+          {
+            "node": "Boucle pour chaque article, sans l'ia",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Réunir les Chemins",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Gen Texte": {
+      "main": [
+        [
+          {
+            "node": "Boucle pour chaque article",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combien article + texte modif",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combien article + texte modif": {
+      "main": [
+        [
+          {
+            "node": "Remplace le texte d'origine par celui modif",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remplace le texte d'origine par celui modif": {
+      "main": [
+        [
+          {
+            "node": "Réunir les Chemins",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Réunir les Chemins": {
+      "main": [
+        [
+          {
+            "node": "Traduction des ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traduction des ID": {
+      "main": [
+        [
+          {
+            "node": "Si i'auteur à ajouté un image alors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Si i'auteur à ajouté un image alors": {
+      "main": [
+        [
+          {
+            "node": "Prompt Génération Image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combiner le texte avec l'image ia",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Télécharger Image Auteur",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combiner le texte avec l'image Auteur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer l'Article": {
+      "main": [
+        [
+          {
+            "node": "Envoyer à WordPress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nano Banana": {
+      "main": [
+        [
+          {
+            "node": "Uploader à WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uploader à WP": {
+      "main": [
+        [
+          {
+            "node": "Combiner le texte avec l'image ia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Génération Image": {
+      "main": [
+        [
+          {
+            "node": "Nano Banana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Télécharger Image Auteur": {
+      "main": [
+        [
+          {
+            "node": "Uploader à WP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uploader à WP1": {
+      "main": [
+        [
+          {
+            "node": "Combiner le texte avec l'image Auteur",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combiner le texte avec l'image Auteur": {
+      "main": [
+        [
+          {
+            "node": "Préparer l'Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combiner le texte avec l'image ia": {
+      "main": [
+        [
+          {
+            "node": "Préparer l'Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Toutes les 30 minutes": {
+      "main": [
+        [
+          {
+            "node": "Requète SQL sur BDD Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "0f3fefd7f31822e8225101c8a88f4e0ac0a4b446ed57404b72f42070db42bb98"
+  }
+}
